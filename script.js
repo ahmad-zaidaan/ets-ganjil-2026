@@ -119,11 +119,14 @@ function renderAmplop() {
 
 		const judul = document.createElement("h3");
 		judul.textContent = itemAmplop.nama;
-		headerKartu.append(judul);
+
+		const aksiDiv = document.createElement("div");
+		aksiDiv.style.display = "flex";
+		aksiDiv.style.alignItems = "center";
+		aksiDiv.style.gap = "0.5rem";
 
 		if (sisa <= 0) {
 			const badge = document.createElement("span");
-
 			badge.textContent = "HABIS";
 			badge.style.backgroundColor = "#ba3828";
 			badge.style.color = "white";
@@ -131,9 +134,24 @@ function renderAmplop() {
 			badge.style.fontWeight = "bold";
 			badge.style.padding = "0.2rem 0.6rem";
 			badge.style.borderRadius = "9999px";
-
-			headerKartu.append(badge);
+			aksiDiv.append(badge);
 		}
+
+		const btnHapusAmplop = document.createElement("button");
+		btnHapusAmplop.type = "button";
+		btnHapusAmplop.textContent = "Hapus";
+		btnHapusAmplop.dataset.aksi = "hapus-amplop";
+		btnHapusAmplop.dataset.id = String(itemAmplop.id);
+		btnHapusAmplop.style.cursor = "pointer";
+		btnHapusAmplop.style.backgroundColor = "transparent";
+		btnHapusAmplop.style.color = "var(--expense-color)";
+		btnHapusAmplop.style.border = "1px solid var(--expense-color)";
+		btnHapusAmplop.style.borderRadius = "0.5rem";
+		btnHapusAmplop.style.padding = "0.2rem 0.6rem";
+		btnHapusAmplop.style.fontSize = "0.75rem";
+		aksiDiv.append(btnHapusAmplop);
+
+		headerKartu.append(judul, aksiDiv);
 
 		const balanceDiv = document.createElement("div");
 		balanceDiv.className = "amplop-balance";
@@ -220,16 +238,12 @@ function render(stateObj) {
 // ------------------- EVENTS
 
 btnBukaTransaksi.addEventListener("click", () => {
-	document.getElementById("error-transaksi").textContent = "";
-
 	modalTransaksi.showModal();
 });
 btnTutupTransaksi.addEventListener("click", () => modalTransaksi.close());
 btnBatalTransaksi.addEventListener("click", () => modalTransaksi.close());
 
 btnBukaAmplop.addEventListener("click", () => {
-	document.getElementById("error-amplop").textContent = "";
-
 	modalAmplop.showModal();
 });
 btnTutupAmplop.addEventListener("click", () => modalAmplop.close());
@@ -237,17 +251,14 @@ btnBatalAmplop.addEventListener("click", () => modalAmplop.close());
 
 formAmplop.addEventListener("submit", (e) => {
 	e.preventDefault();
-	const errDiv = document.getElementById("error-amplop");
 	const inputNama = document.getElementById("nama-amplop");
 	const inputJatah = document.getElementById("jatah-amplop");
 
 	const nama = inputNama.value.trim();
 	const jatah = Number(inputJatah.value);
 
-	if (nama === "" || isNaN(jatah) || jatah <= 0) {
-		errDiv.textContent = "Nama amplop dan nominal harus diisi lebih dari 0.";
-		
-        return;
+	if (nama === "" || jatah <= 0) {
+		return;
 	}
 
 	const amplopAda = state.amplop.find((a) => a.nama.toLowerCase() === nama.toLowerCase());
@@ -269,7 +280,6 @@ formAmplop.addEventListener("submit", (e) => {
 
 formTransaksi.addEventListener("submit", (e) => {
 	e.preventDefault();
-	const errDiv = document.getElementById("error-transaksi");
 	const inputTanggal = document.getElementById("tgl-transaksi");
 	const selectJenis = document.getElementById("jenis-transaksi");
 	const selectKat = document.getElementById("kategori-transaksi");
@@ -279,16 +289,8 @@ formTransaksi.addEventListener("submit", (e) => {
 	const tanggal = inputTanggal.value;
 	const nominal = Number(inputNominal.value);
 
-	if (!tanggal) {
-		errDiv.textContent = "Tanggal wajib diisi.";
-		
-        return;
-	}
-
-	if (isNaN(nominal) || nominal <= 0) {
-		errDiv.textContent = "Nominal harus berupa angka lebih dari 0.";
-		
-        return;
+	if (!tanggal || nominal <= 0) {
+		return;
 	}
 
 	state.transaksi.push({
@@ -304,6 +306,19 @@ formTransaksi.addEventListener("submit", (e) => {
 	render(state);
 	formTransaksi.reset();
 	modalTransaksi.close();
+});
+
+wadahAmplop.addEventListener("click", (e) => {
+	const tombol = e.target.closest("[data-aksi='hapus-amplop']");
+	if (!tombol) return;
+
+	const idHapus = tombol.dataset.id;
+	const yakin = confirm("Apakah Anda yakin ingin menghapus amplop ini?");
+	if (!yakin) return;
+
+	state.amplop = state.amplop.filter((a) => String(a.id) !== idHapus);
+	simpanData();
+	render(state);
 });
 
 tabelBody.addEventListener("click", (e) => {

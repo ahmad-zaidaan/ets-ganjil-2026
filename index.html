@@ -17,6 +17,7 @@
 				<div class="link">tes</div>
 			</div> -->
 		</header>
+
 		<main>
 			<div class="card card-hero">
 				<div class="balance">
@@ -79,7 +80,32 @@
 				</div>
 			</div>
 
-			<!-- Modal / Popup Tambah Transaksi -->
+			<!-- POP-UP -->
+
+			<dialog id="modal-amplop" class="modal">
+				<div class="modal-header">
+					<h2>Atur / Tambah Amplop</h2>
+					<button type="button" id="btn-tutup-amplop" class="btn-close">&times;</button>
+				</div>
+
+				<form id="form-amplop">
+					<div class="form-group">
+						<label for="nama-amplop">Nama Pos / Amplop</label>
+						<input type="text" id="nama-amplop" placeholder="Contoh: Belanja Dapur, Uang Sekolah" required />
+					</div>
+
+					<div class="form-group">
+						<label for="jatah-amplop">Nominal Jatah Awal Bulan (Rp)</label>
+						<input type="number" id="jatah-amplop" placeholder="Contoh: 1500000" min="1" required />
+					</div>
+
+					<div class="modal-actions">
+						<button type="button" id="btn-batal-amplop" class="btn btn-secondary">Batal</button>
+						<button type="submit" class="btn btn-primary">Simpan Amplop</button>
+					</div>
+				</form>
+			</dialog>
+
 			<dialog id="modal-transaksi" class="modal">
 				<div class="modal-header">
 					<h2>Tambah Transaksi</h2>
@@ -87,9 +113,6 @@
 				</div>
 
 				<form id="form-transaksi">
-					<!-- Error box for W6 -->
-					<div id="error-transaksi" class="error-msg"></div>
-
 					<div class="form-group">
 						<label for="tgl-transaksi">Tanggal</label>
 						<input type="date" id="tgl-transaksi" required />
@@ -104,9 +127,8 @@
 					</div>
 
 					<div class="form-group">
-						<label for="kategori-transaksi">Kategori / Amplop</label>
+						<label for="kategori-transaksi">Kategori / Amplop Terkait</label>
 						<select id="kategori-transaksi">
-							<!-- Options can be statically placed or dynamically populated -->
 							<option value="Belanja Dapur">Belanja Dapur</option>
 							<option value="Listrik & Air">Listrik & Air</option>
 							<option value="Pendidikan Anak">Pendidikan Anak</option>
@@ -131,7 +153,9 @@
 				</form>
 			</dialog>
 		</main>
+
 		<footer></footer>
-		<script type="module" src="script.js"></script>
+
+		<script src="script.js" defer></script>
 	</body>
 </html>
